@@ -43,7 +43,7 @@ def calc_landmark_list(image, landmarks) -> List:
     
     return landmark_point
 
-def pre_process_landmark(landmakr_list) -> List:
+def pre_process_landmark(landmark_list) -> List:
     #: Создается глубокая копия входного списка  чтобы избежать изменения оригинального списка.
     temp_landmark_list = copy.deepcopy(landmark_list)
 

@@ -10,3 +10,8 @@ from dotenv import load_dotenv #: импорт функции load_dotenv из �
 
 from slr.model.classifier import KeyPointClassifier #: тмпортируем класс из файла classifier.py. Класс содержит методы для работы с моделью
 
+from slr.utils.cvfpscalc import CvFPSCalc
+from slr.utils.landmarks import draw_landmarks
+
+from slr.utils.draw_debug import draw_bounding_rect
+from slr.utils.draw_debug import draw_hand_label

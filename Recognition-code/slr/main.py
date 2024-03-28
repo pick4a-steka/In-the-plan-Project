@@ -10,4 +10,3 @@ from dotenv import load_dotenv #: импорт функции load_dotenv из �
 
 from slr.model.classifier import KeyPointClassifier #: тмпортируем класс из файла classifier.py. Класс содержит методы для работы с моделью
 
-#: from slr.utils.args import get_args

@@ -2,6 +2,7 @@ import copy #: модуль, который предоставляет функ�
 import csv #: модуль, который позволяет работать с файлами CSV в Python (чтение и запись данных из и в файлы CSV)
 import os #: модуль, который предоставляет функции для взаимодействия с ОС (создание, удаление и перемещение файлов и директорий)
 import datetime #: модуль, который предоставляет классы для работы с датами и временем
+import numpy
 
 import cv2 as cv
 import mediapipe #: модуль, который предоставляет набор инструментов для анализа иэображений и видео, таких как обнаружение объектов, распознавание жестов
@@ -38,6 +39,9 @@ def main():
     cap.set(cv.CAP_PROP_FRAME_WIDTH, CAP_WIDTH)
     cap.set(cv.CAP_PROP_FRAME_HEIGHT, CAP_HEIGHT)
 
+    black_image = numpy.zeros((100, 100, 3), dtype=numpy.uint8)
+    font = cv.FONT_HERSHEY_COMPLEX
+
     #: Загрузка инструментов для обнаружения руки
     mp_hands = mediapipe.solutions.hands
     hands = mp_hands.Hands(
@@ -53,7 +57,7 @@ def main():
     nums = list(range (0, 34))
     letters = []
 
-    for letter in ''.join([chr(i) for i in range (ord('a'), ord('a') + 32)]):
+    for letter in ''.join([chr(i) for i in range (ord('а'), ord('а') + 32)]):
         letters.append(letter)
     letters.append('~')
     letters.append('-')
@@ -99,22 +103,31 @@ def main():
                 #: Расчет ориентира
                 landmark_list = calc_landmark_list(debug_image, hand_landmarks)
 
-                pre_processed_landmark_list = pre_process_landmark(landmark_list)
+                #: pre_processed_landmark_list = pre_process_landmark(landmark_list)
 
-                hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
+                hand_sign_id = keypoint_classifier(landmark_list)
 
                 if hand_sign_id == 35:
                     hand_sign_text = ""
                 else:
                     hand_sign_text = keypoint_classifier_label[hand_sign_id]
+                    print(hand_sign_text)
+
+                text_size = cv.getTextSize(hand_sign_text, font, 1, 2)[0]
+                text_x = (100 - text_size[0]) // 2
+                text_y = (100 - text_size[1]) // 2
+                black_image = numpy.zeros((100, 100, 3), dtype=numpy.uint8)
+                cv.putText(black_image, hand_sign_text, (text_x, text_y), font, 1, (255, 255, 255), 2)
+
+                cv.imshow("Symbol", black_image)
                 
                 debug_image = draw_bounding_rect(debug_image, use_brect, brect)
                 debug_image = draw_landmarks(debug_image, landmark_list)
                 debug_image = draw_hand_label(debug_image, brect, handedness)
-
+        cv.imshow("Sign Language Recognition", debug_image)
 
     cap.release()
-    cap.destroyAllWindows()
+    cv.destroyAllWindows()
     print("ИНФ: Программа завершила работу")
 
 if __name__ == "__main__":

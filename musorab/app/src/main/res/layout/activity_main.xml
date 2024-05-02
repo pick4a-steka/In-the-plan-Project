@@ -21,10 +21,10 @@
             android:layout_height="79dp"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="А"
+            android:text="Й"
             android:textColor="@color/Golubizna"
             android:textColorLink="#F44336"
-            android:textSize="65sp"
+            android:textSize="64sp"
             app:layout_constraintEnd_toEndOf="@+id/textView2"
             app:layout_constraintStart_toStartOf="@+id/textView2"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />

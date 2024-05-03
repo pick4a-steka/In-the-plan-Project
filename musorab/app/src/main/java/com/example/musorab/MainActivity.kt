@@ -65,8 +65,8 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION) // Вызов окна
         }
     }
-    // Данный закоментированный кусок кода нужен для того, если нет доступа к камере, то выведется другой экран
-    /*override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    // Данная функция нужна для того,что если нет доступа к камере, то выведется другой экран
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -74,10 +74,11 @@ class MainActivity : AppCompatActivity() {
 
             } else {
                 // Доступ к камере не разрешен
-                println("Доступ к камере не был предоставлен")
+                startActivity(Intent(this, MainActivity3::class.java))
+                finish()
             }
         }
-    }*/
+    }
     override fun onStart() { // Эти функции добавлены просто так
         super.onStart()
         Log.d("myLog1", "start")

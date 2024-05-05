@@ -1,5 +1,5 @@
 from slr import main
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import numpy
 import cv2
 import base64
@@ -21,7 +21,7 @@ def index():
 
     # Декодирование массива numpy в изображение с помощью OpenCV
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    return main(loaded_model, label, hands, image)
+    return jsonify(main(loaded_model, label, hands, image))
 
 if __name__ == "__main__":
     app.run(debug=True, host="192.168.157.160", port="5000")

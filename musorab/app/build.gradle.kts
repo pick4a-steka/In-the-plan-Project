@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.musorab"
-        minSdk = 33
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -46,6 +46,10 @@ dependencies {
 
     // CameraX Camera2 support library
     implementation ("androidx.camera:camera-camera2:$camerax_version")
+
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.okhttp3:okhttp:4.9.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
     // CameraX Lifecycle library
     implementation ("androidx.camera:camera-lifecycle:$camerax_version")

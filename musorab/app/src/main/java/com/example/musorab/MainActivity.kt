@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
             // Установка использования превью и захвата изображения
             cameraProvider.bindToLifecycle(this, CameraSelector.DEFAULT_BACK_CAMERA, preview, imageCapture)
         }, ContextCompat.getMainExecutor(this))
+
     }
     private fun requestCameraPermission() { // Окно, запрашивающее доступ к камере
         // Проверка, нет  ли доступа к камере

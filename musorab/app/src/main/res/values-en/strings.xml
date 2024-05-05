@@ -3,4 +3,5 @@
     <string name="error_coonect">Connection error</string>
     <string name="Button_er_text">Reconnect</string>
     <string name="Result">Result:</string>
+    <string name="nc1">Give GestuScan access to your camera</string>
 </resources>

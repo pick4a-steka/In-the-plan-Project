@@ -4,4 +4,9 @@
     <string name="Button_er_text">Reconnect</string>
     <string name="Result">Result:</string>
     <string name="nc1">Give GestuScan access to your camera</string>
+    <string name="nc2">Why is this necessary</string>
+    <string name="nc3">You can translate dactyl</string>
+    <string name="nc4">How to open access</string>
+    <string name="nc5">Go to the device settings and allow GestuScan access to the camera</string>
+    <string name="nc6">OPEN SETTINGS</string>
 </resources>

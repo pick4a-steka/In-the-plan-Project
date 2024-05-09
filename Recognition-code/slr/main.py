@@ -8,15 +8,16 @@ from dotenv import load_dotenv #: импорт функции load_dotenv из �
 from slr.utils.pre_process import calc_landmark_list
 
 def main(keypoint_classifier, keypoint_classifier_label, hands, image):
-    CAP_WIDTH = 640
-    height, width = image.shape[:2]
-    aspect_ratio = width / height
+    # CAP_WIDTH = 640
+    image = cv.rotate(image, cv.ROTATE_90_CLOCKWISE) # Поворачиваем изображение на 90 градусов против часовой стрелки
+    # height, width = image.shape[:2]
+    # aspect_ratio = width / height
 
-    CAP_HEIGHT = int(CAP_WIDTH / aspect_ratio)
-    hand_sign_text = "?"
+    # CAP_HEIGHT = int(CAP_WIDTH / aspect_ratio)
+    # hand_sign_text = "?"
 
-    #: Чтение кадра
-    image = cv.resize(image, (CAP_WIDTH, CAP_HEIGHT))
+    # #: Чтение кадра
+    # image = cv.resize(image, (CAP_WIDTH, CAP_HEIGHT))
 
     #: отзеркаливаем изображение
     image = cv.flip(image, 1)
@@ -39,11 +40,10 @@ def main(keypoint_classifier, keypoint_classifier_label, hands, image):
             hand_sign_id = keypoint_classifier(landmark_list)
 
             if hand_sign_id == 35:
-                hand_sign_text = ""
+                hand_sign_text = "-"
             else:
                 hand_sign_text = keypoint_classifier_label[hand_sign_id]
-                print(hand_sign_text)
-                
+
     return hand_sign_text
 
 if __name__ == "__main__":

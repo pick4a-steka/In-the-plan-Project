@@ -12,7 +12,7 @@ app = Flask(__name__)
 @app.route("/", methods=["POST"])
 def index():
     data = request.json
-    data64 = data['image']
+    data64 = data['imageBase64']
     # Декодирование base64 в бинарные данные изображения
     image_data = base64.b64decode(data64)
     
@@ -21,7 +21,10 @@ def index():
 
     # Декодирование массива numpy в изображение с помощью OpenCV
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    return jsonify(main(loaded_model, label, hands, image))
+    simbol = main(loaded_model, label, hands, image)
+    print("Server response: ", simbol)
+    answer = {"simbol" : simbol}
+    return jsonify(answer)
 
 if __name__ == "__main__":
-    app.run(debug=True, host="192.168.157.160", port="5000")
+    app.run(debug=True, host="192.168.195.160", port="5000")

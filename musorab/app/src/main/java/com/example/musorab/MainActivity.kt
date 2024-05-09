@@ -51,6 +51,10 @@ import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.Bitmap.Config
+
 
 var A:Int=1
 private const val TAG = "Activity"
@@ -59,9 +63,8 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_CAMERA_PERMISSION = 1
     lateinit var binding: ActivityMainBinding
     private lateinit var simbol: TextView
-    val timer = Timer()
     data class ImageData(val imageBase64: String) // Класс для хранения данных изображения
-    data class ApiResponse(val message: String) // Класс для принятия символа с сервера
+    data class ResponseData(val simbol: String) // Класс для принятия символа с сервера
     override fun onCreate(s: Bundle?) {
         super.onCreate(s)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -127,16 +130,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Здесь предполагается, что imageCaptureCallback - это ваш обратный вызов, который вызывается после успешного захвата изображения
-    @ExperimentalGetImage
     val imageCaptureCallback = object : ImageCapture.OnImageCapturedCallback() {
         override fun onCaptureSuccess(image: ImageProxy) {
             try {
+                val CAP_WIDTH = 640
                 // Получение Bitmap из ImageProxy
                 val imageBitmap = imageProxyToBitmap(image)
 
+                val height = image.height
+                val width = image.width
+                val aspectRatio = width.toFloat() / height
+
+                val CAP_HEIGHT = (CAP_WIDTH / aspectRatio).toInt()
+
+                // Изменение размера изображения
+                val resizedImage = Bitmap.createScaledBitmap(imageBitmap!!, CAP_WIDTH, CAP_HEIGHT, true)
+
                 // Получение массива байтов из Bitmap
                 val byteArrayOutputStream = ByteArrayOutputStream()
-                imageBitmap?.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+                resizedImage?.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
                 val imageBytes = byteArrayOutputStream.toByteArray()
 
                 // Преобразование массива байтов в строку base64
@@ -149,11 +161,15 @@ class MainActivity : AppCompatActivity() {
                 val gson = Gson()
                 val jsonData = gson.toJson(imageData)
 
+                Log.d(TAG, "JSON data: $jsonData")
+
                 // Отправка JSON на сервер (здесь предполагается использование вашего метода отправки POST-запроса)
                 sendDataToServer(jsonData)
             } catch (ex: Exception) {
                 // Обработка ошибки при преобразовании или отправке данных
                 Log.e(TAG, "Error processing image capture", ex)
+            } finally {
+                image.close() // Закрытие ImageProxy
             }
         }
 
@@ -166,8 +182,9 @@ class MainActivity : AppCompatActivity() {
     fun sendDataToServer(jsonData: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val url = URL("https://192.168.157.160")
+                val url = URL("https://192.168.195.160")
                 val connection = url.openConnection() as HttpURLConnection
+                Log.d(TAG, "after string: $jsonData")
                 connection.requestMethod = "POST"
                 connection.setRequestProperty("Content-Type", "application/json") // Установка типа содержимого как JSON
                 connection.connectTimeout = 10_000 // 10 секунд
@@ -189,9 +206,9 @@ class MainActivity : AppCompatActivity() {
 
                 val result = response.toString()
                 val gson = Gson()
-                val resp: ApiResponse = gson.fromJson(result, ApiResponse::class.java)
+                val resp = gson.fromJson(result, ResponseData::class.java)
                 withContext(Dispatchers.Main) {
-                    simbol.text = resp.message
+                    simbol.text = resp.simbol
                 }
             } catch (e: IOException) {
                 Log.e("MainActivity", "Ошибка при выполнении POST запроса: ${e.message}")
@@ -203,6 +220,12 @@ class MainActivity : AppCompatActivity() {
                 Log.e("MainActivity", "Превышено время ожидания ответа от сервера: ${e.message}")
                 withContext(Dispatchers.Main) {
                     // Здесь ты можешь обновить пользовательский интерфейс или выполнить другие действия при возникновении исключения
+                    simbol.text = "NOT"
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Неизвестная ошибка: ${e.message}")
+                withContext(Dispatchers.Main) {
+                    simbol.text = "Неизвестная ошибка: ${e.message}"
                 }
             }
         }
@@ -248,7 +271,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, "Error capturing image", ex)
             }
             // Пауза перед следующим захватом
-            delay(5000L)
+            delay(2000L)
         }
     }
 

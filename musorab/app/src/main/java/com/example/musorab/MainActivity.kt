@@ -56,6 +56,7 @@ import javax.net.ssl.X509TrustManager
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Bitmap.Config
+import android.view.View
 
 //var A:Int=1
 class MainActivity : AppCompatActivity() {
@@ -187,29 +188,33 @@ class MainActivity : AppCompatActivity() {
                 Log.e("MainActivity", "Ошибка при выполнении POST запроса: ${e.message}")
                 "Error: ${e.message}"
                 withContext(Dispatchers.Main) {
-                    simbol.text = "No connection"
-                    end(this@MainActivity)
+                binding.result.visibility=View.GONE
+                    binding.bconnect.visibility=View.VISIBLE
+                    binding.textView2.text=resources.getString(R.string.error_coonect)
                 }
             } catch (e: SocketTimeoutException) {
                 Log.e("MainActivity", "Превышено время ожидания ответа от сервера: ${e.message}")
                 withContext(Dispatchers.Main) {
                     // Здесь ты можешь обновить пользовательский интерфейс или выполнить другие действия при возникновении исключения
-                    simbol.text = "NOT"
-                    end(this@MainActivity)
+                    binding.result.visibility=View.GONE
+                    binding.bconnect.visibility=View.VISIBLE
+                    binding.textView2.text=resources.getString(R.string.error_coonect)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Неизвестная ошибка: ${e.message}")
                 withContext(Dispatchers.Main) {
-                    simbol.text = "Неизвестная ошибка: ${e.message}"
-                    end(this@MainActivity)
+                    binding.result.visibility=View.GONE
+                    binding.bconnect.visibility=View.VISIBLE
+                    binding.textView2.text=resources.getString(R.string.error_coonect)
+
                 }
             }
         }
 
     }
-    private fun end(context: Context)
+    fun end(view: View)
     {
-        startActivity(Intent(context, MainActivity2::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
     private fun setupCamera() {

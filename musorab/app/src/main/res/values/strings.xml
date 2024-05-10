@@ -3,4 +3,10 @@
     <string name="error_coonect">Ошибка соединения</string>
     <string name="Button_er_text">ПЕРЕПОДКЛЮЧИТЬСЯ</string>
     <string name="Result">Результат:</string>
+    <string name="nc1">Откройте GestuScan доступ к камере</string>
+    <string name="nc2">Зачем это нужно</string>
+    <string name="nc3">Вы можете переводить дактиль</string>
+    <string name="nc4">Как открыть доступ</string>
+    <string name="nc5">Перейдите настройки устройства и откройте GestuScan доступ к камере</string>
+    <string name="nc6">ОТКРЫТЬ НАСТРОЙКИ</string>
 </resources>

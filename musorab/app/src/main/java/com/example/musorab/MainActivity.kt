@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat
 import com.example.musorab.databinding.ActivityMain2Binding
 import com.example.musorab.databinding.ActivityMainBinding
 import android.Manifest
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.camera.core.ExperimentalGetImage
 import androidx.core.app.ActivityCompat
@@ -55,13 +57,11 @@ import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Bitmap.Config
 
-
-var A:Int=1
-private const val TAG = "Activity"
+//var A:Int=1
 class MainActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
-    private val REQUEST_CAMERA_PERMISSION = 1
     lateinit var binding: ActivityMainBinding
+    val REQUEST_CAMERA_PERMISSION = 100
     private lateinit var simbol: TextView
     data class ImageData(val imageBase64: String) // Класс для хранения данных изображения
     data class ResponseData(val simbol: String) // Класс для принятия символа с сервера
@@ -69,9 +69,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(s)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        simbol = findViewById(R.id.result)
-        enableEdgeToEdge()
-
+        Log.d("myLog0", "create")
+        simbol=binding.result
         val trustAllCerts = arrayOf<TrustManager>(object: X509TrustManager {
             override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
 
@@ -91,35 +90,10 @@ class MainActivity : AppCompatActivity() {
         val allHostsValid = HostnameVerifier { _, _ -> true }
         HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid)
 
-        // Проверяем, есть ли у приложения разрешение на использование камеры
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            // Если разрешения нет, то запрашиваем его у пользователя
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION)
-        } else {
-            // Если разрешение уже есть, настраиваем камеру
-            setupCamera()
-        }
+        requestCameraPermission()
+        setupCamera()
 
-        Log.d("myLog0", "create")
-        if (A==1) {
-            A=0
-            startActivity(Intent(this, MainActivity2::class.java))
-                finish()
-        }
     }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Разрешение на использование камеры было предоставлено
-                setupCamera()
-            } else {
-                // Пока не придумал что делать если пользователь не дал разрешения
-            }
-        }
-    }
-
     fun imageProxyToBitmap(image: ImageProxy): Bitmap? {
         val planeProxy = image.planes[0]
         val buffer = planeProxy.buffer
@@ -128,7 +102,6 @@ class MainActivity : AppCompatActivity() {
 
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
-
     // Здесь предполагается, что imageCaptureCallback - это ваш обратный вызов, который вызывается после успешного захвата изображения
     val imageCaptureCallback = object : ImageCapture.OnImageCapturedCallback() {
         override fun onCaptureSuccess(image: ImageProxy) {
@@ -215,23 +188,30 @@ class MainActivity : AppCompatActivity() {
                 "Error: ${e.message}"
                 withContext(Dispatchers.Main) {
                     simbol.text = "No connection"
+                    end(this@MainActivity)
                 }
             } catch (e: SocketTimeoutException) {
                 Log.e("MainActivity", "Превышено время ожидания ответа от сервера: ${e.message}")
                 withContext(Dispatchers.Main) {
                     // Здесь ты можешь обновить пользовательский интерфейс или выполнить другие действия при возникновении исключения
                     simbol.text = "NOT"
+                    end(this@MainActivity)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Неизвестная ошибка: ${e.message}")
                 withContext(Dispatchers.Main) {
                     simbol.text = "Неизвестная ошибка: ${e.message}"
+                    end(this@MainActivity)
                 }
             }
         }
 
     }
-
+    private fun end(context: Context)
+    {
+        startActivity(Intent(context, MainActivity2::class.java))
+        finish()
+    }
     private fun setupCamera() {
         // Создание нового экземпляра CameraX
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -274,10 +254,28 @@ class MainActivity : AppCompatActivity() {
             delay(2000L)
         }
     }
-
-    override fun onStart() {
+    private fun requestCameraPermission() { // Окно, запрашивающее доступ к камере
+        // Проверка, нет  ли доступа к камере
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA_PERMISSION) // Вызов окна
+        }
+    }
+    // Данная функция нужна для того,что если нет доступа к камере, то выведется другой экран
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Доступ к камере разрешен
+                setupCamera()
+            } else {
+                // Доступ к камере не разрешен
+                startActivity(Intent(this, MainActivity3::class.java))
+                finish()
+            }
+        }
+    }
+    override fun onStart() { // Эти функции добавлены просто так
         super.onStart()
-
         Log.d("myLog1", "start")
     }
 

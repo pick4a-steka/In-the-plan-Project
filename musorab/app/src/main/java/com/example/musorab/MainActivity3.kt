@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import android.provider.Settings
+import android.util.Log
 
 class MainActivity3 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,5 +15,9 @@ class MainActivity3 : AppCompatActivity() {
     fun OnClick2(view: View){ // Слушатель нажатий
         val intent = Intent(Settings.ACTION_SETTINGS)
         startActivity(intent)
+    }
+    override fun onResume() {
+        super.onResume()
+        Log.d("myLog", "resume")
     }
 }

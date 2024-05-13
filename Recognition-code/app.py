@@ -21,6 +21,8 @@ def index():
 
     # Декодирование массива numpy в изображение с помощью OpenCV
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    cv2.imshow("Image", image)
+    cv2.waitKey(0)
     simbol = main(loaded_model, label, hands, image)
     print("Server response: ", simbol)
     answer = {"simbol" : simbol}

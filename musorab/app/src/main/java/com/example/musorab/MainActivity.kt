@@ -1,36 +1,24 @@
 package com.example.musorab
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
-import android.view.LayoutInflater
-import androidx.activity.enableEdgeToEdge
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
-import com.example.musorab.databinding.ActivityMain2Binding
 import com.example.musorab.databinding.ActivityMainBinding
 import android.Manifest
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.content.pm.PackageManager
-import androidx.camera.core.ExperimentalGetImage
 import androidx.core.app.ActivityCompat
 import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
-import java.util.*
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.ImageProxy.*
-import java.io.File
 import android.util.Base64
 import android.graphics.BitmapFactory
 import android.widget.TextView
@@ -43,7 +31,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.net.SocketTimeoutException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.delay
@@ -53,12 +40,8 @@ import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
-import android.graphics.Canvas
-import android.graphics.Matrix
-import android.graphics.Bitmap.Config
 import android.view.View
 
-//var A:Int=1
 class MainActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     lateinit var binding: ActivityMainBinding
@@ -279,29 +262,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    override fun onStart() { // Эти функции добавлены просто так
-        super.onStart()
-        Log.d("myLog1", "start")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("myLog2", "resume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d("myLog3", "pause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d("myLog4", "stop")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("myLog5", "destroy")
-    }
-
 }
